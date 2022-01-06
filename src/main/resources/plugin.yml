@@ -1,0 +1,11 @@
+name: strengthPlus
+main: top.mccat.StrengthPlus
+version: 1.3
+api-version: 1.16
+commands:
+    sp:
+        description: "strengthPlus command"
+        usage: /sp
+        aliases: [ stregnthplus,qh ]
+        permission: "strengths.use"
+        permission-message: "§a[StrengthPlus]§c你无权使用该指令"
