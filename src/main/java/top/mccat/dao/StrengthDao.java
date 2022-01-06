@@ -11,14 +11,39 @@ import org.bukkit.inventory.ItemStack;
  * @Version: 1.0
  */
 public interface StrengthDao {
-    ItemStack normalStrength(boolean isSuccess);
+    /**
+     * 普通强化
+     * @param isSuccess 是否成功
+     * @param level 当前等级
+     * @return 强化物品
+     */
+    ItemStack normalStrength(boolean isSuccess,int level);
 
-    ItemStack safeStrength(boolean isSuccess);
+    /**
+     * 安全强化
+     * @param isSuccess 是否成功
+     * @param level 当前等级
+     * @return 强化物品
+     */
+    ItemStack safeStrength(boolean isSuccess, int level);
 
-    ItemStack successStrength();
+    /**
+     * 必定成功强化
+     * @param level 当前等级
+     * @return 强化物品
+     */
+    ItemStack successStrength(int level);
 
+    /**
+     * 直接满级强化
+     * @return 强化物品
+     */
     ItemStack adminStrength();
 
+    /**
+     * 获取普通强化石
+     * @return 获取强化石
+     */
     ItemStack giveNormalStone();
 
     ItemStack giveSafeStone();

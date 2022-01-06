@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import top.mccat.handler.CommandHandler;
 import top.mccat.utils.ColorUtils;
 import top.mccat.utils.ConfigFactory;
+import top.mccat.utils.MenuUtils;
 
 import java.util.Objects;
 
@@ -24,6 +25,7 @@ public class StrengthPlus extends JavaPlugin {
     @Override
     public void onLoad() {
         factory = new ConfigFactory(this);
+        MenuUtils.authorMenu(this);
     }
 
     @Override
