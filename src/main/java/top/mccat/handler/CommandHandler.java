@@ -26,6 +26,7 @@ public class CommandHandler implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if(commandSender instanceof Player){
+
         }
         return false;
     }
@@ -38,7 +39,4 @@ public class CommandHandler implements CommandExecutor {
         this.factory = factory;
     }
 
-    public ConfigFactory getFactory() {
-        return factory;
-    }
 }

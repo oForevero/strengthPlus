@@ -29,6 +29,7 @@ public class StrengthPlus extends JavaPlugin {
     @Override
     public void onEnable() {
         Objects.requireNonNull(Bukkit.getPluginCommand("sp")).setExecutor(handler = new CommandHandler(this));
+        handler.setFactory(factory);
     }
 
     @Override
