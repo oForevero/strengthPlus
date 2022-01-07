@@ -3,9 +3,11 @@ package top.mccat.service.impl;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mccat.dao.impl.StrengthDaoImpl;
 import top.mccat.domain.StrengthExtra;
+import top.mccat.domain.StrengthStone;
 import top.mccat.service.StrengthService;
 
 import java.util.List;
@@ -29,14 +31,16 @@ public class StrengthServiceImpl implements StrengthService {
     public ItemStack strengthItem(Player p,boolean isSafe, boolean isSuccess, boolean isAdmin) {
         ItemStack mainHandStack = null;
         if(canBeStrength(mainHandStack = p.getInventory().getItemInMainHand())){
+            int level = getStackLevel(mainHandStack);
+            boolean strengthStatue = strengthResult(level);
             if(isSafe){
-
+                dao.safeStrength(strengthStatue,level);
             }else if(isSuccess){
-
+                dao.successStrength(level);
             }else if(isAdmin){
-
+                dao.adminStrength();
             }else {
-
+                dao.normalStrength(strengthStatue,level);
             }
         }else{
             return null;
@@ -99,6 +103,36 @@ public class StrengthServiceImpl implements StrengthService {
         List<Integer> strengthChance = strengthExtra.getStrengthItemExtra().getStrengthChance();
         int chance = random.nextInt(101);
         return chance < strengthChance.get(index - 1);
+    }
+
+    /**
+     * 扣取强化石方法.
+     * @param isSafe 是否为保护强化
+     * @param isSuccess 是否为必定成功强化
+     * @return cost 是否支付过了
+     */
+    private boolean costStone(Player player,boolean isSafe, boolean isSuccess){
+        PlayerInventory inventory = player.getInventory();
+        ItemStack[] extraContents = inventory.getExtraContents();
+        StrengthStone stone;
+        if(isSafe){
+            //对应保护石的列表地址
+            stone = strengthExtra.getStrengthStones().get(1);
+        }else if(isSuccess){
+            //对应成功石的列表地址
+            stone = strengthExtra.getStrengthStones().get(2);
+        }else {
+            //对应普通石的列表地址
+            stone = strengthExtra.getStrengthStones().get(0);
+        }
+        boolean cost = false;
+        for(ItemStack stack : extraContents){
+            if(stone.getMaterial().equals(stack.getType().toString())){
+                stack.setAmount(stack.getAmount()-1);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setStrengthExtra(StrengthExtra strengthExtra) {

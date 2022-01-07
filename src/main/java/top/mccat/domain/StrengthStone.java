@@ -14,6 +14,9 @@ import java.util.List;
  */
 public class StrengthStone {
     private String stoneName;
+    /**
+     * 列表下标0对应普通强化石，1对应保护强化石头，2对应必定成功强化石
+     */
     private List<String> lore;
     private boolean isSafe;
     private boolean isLuck;
