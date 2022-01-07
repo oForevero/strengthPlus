@@ -23,9 +23,9 @@ import java.util.Random;
 public class StrengthServiceImpl implements StrengthService {
     private final StrengthDaoImpl dao = new StrengthDaoImpl();
     private StrengthExtra strengthExtra;
-    private static final String STRENGTH_PREFIX = "§b[强化等级]:§6§l";
-    private static final String ADMIN_PREFIX = "§b[§c§l管理员§b强化等级]:§6§l";
-    private Random random = new Random();
+    public static final String STRENGTH_PREFIX = "§b[强化等级]:§6§l";
+    public static final String ADMIN_PREFIX = "§b[§c§l管理员§b强化等级]:§6§l";
+    private final Random random = new Random();
 
     @Override
     public ItemStack strengthItem(Player p,boolean isSafe, boolean isSuccess, boolean isAdmin) {
@@ -33,19 +33,19 @@ public class StrengthServiceImpl implements StrengthService {
         if(canBeStrength(mainHandStack = p.getInventory().getItemInMainHand())){
             int level = getStackLevel(mainHandStack);
             boolean strengthStatue = strengthResult(level);
-            if(isSafe){
-                dao.safeStrength(strengthStatue,level);
-            }else if(isSuccess){
-                dao.successStrength(level);
-            }else if(isAdmin){
-                dao.adminStrength();
-            }else {
-                dao.normalStrength(strengthStatue,level);
+            if(costStone(p,isSafe,isSuccess)) {
+                if (isSafe) {
+                    dao.safeStrength(strengthStatue, level);
+                } else if (isSuccess) {
+                    dao.successStrength(level);
+                } else if (isAdmin) {
+                    dao.adminStrength();
+                } else {
+                    dao.normalStrength(strengthStatue, level);
+                }
             }
-        }else{
-            return null;
         }
-        return mainHandStack;
+        return null;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class StrengthServiceImpl implements StrengthService {
     /**
      * 获取物品等级
      * @param stack itemStack对象
-     * @return 等级数值
+     * @return 等级数值 （为 -1 代表无lore 物品，为 0 代表有lore但是无强化等级，>0则代表有强化等级）
      */
     private int getStackLevel(ItemStack stack){
         ItemMeta itemMeta = stack.getItemMeta();
@@ -82,12 +82,14 @@ public class StrengthServiceImpl implements StrengthService {
             if (lore!=null){
                 for(String str : lore){
                     if (str.contains(STRENGTH_PREFIX)){
-                        return str.split(STRENGTH_PREFIX)[1].length();
+                        //由于有§c的前置所以要-2
+                        return str.split(STRENGTH_PREFIX)[1].length()-2;
                     }
                 }
+                return 0;
             }
         }
-        return 0;
+        return -1;
     }
 
     /**
