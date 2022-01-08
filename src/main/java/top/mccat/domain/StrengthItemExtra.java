@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class StrengthItemExtra {
     private List<Integer> strengthChance;
-    private List<Material> materials;
+    private List<String> materials;
     private List<StrengthStone> strengthStones;
     public StrengthItemExtra(){}
 
@@ -34,11 +34,11 @@ public class StrengthItemExtra {
         this.strengthStones = strengthStones;
     }
 
-    public List<Material> getMaterials() {
+    public List<String> getMaterials() {
         return materials;
     }
 
-    public void setMaterials(List<Material> materials) {
+    public void setMaterials(List<String> materials) {
         this.materials = materials;
     }
 

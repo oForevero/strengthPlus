@@ -17,18 +17,20 @@ public class MenuUtils {
      * @param player player.
      */
     public static void menuInfo(Player player){
-        sendMsg(player,"&4&l===-------&6&l[strengthPlus]&4&l--------===");
+        sendMsg(player,"&4&l===---------&6&l[strengthPlus]&4&l----------===");
         sendMsg(player,"&c/sp 或 qh 打开此帮助菜单");
         sendMsg(player,"&a/sp 或 qh normal 进行一次强化");
         sendMsg(player,"&b/sp 或 qh safe 保护强化 (强化失败不降级)");
         sendMsg(player,"&b/sp 或 qh success 必定成功强化 ");
         if(player.hasPermission("strengthPlus.admin")){
-            sendMsg(player,"&6/sp admin 管理员强化，直接满级");
-            sendMsg(player,"&c/sp reload 管理员专用，重载配置");
-            sendMsg(player,"&a/sp normalStone 管理员权限可用，给与普通强化石");
-            sendMsg(player,"&b/sp safeStone 管理员权限可用，给与保护强化石");
-            sendMsg(player,"&d/sp successStone 管理员权限可用，给与必定成功强化石");
+            sendMsg(player,"&4&l===-------&6&l[strengthPlusAdmin]&4&l--------===");
+            sendMsg(player,"&c/sp &b admin &c管理员强化，&a直接满级");
+            sendMsg(player,"&c/sp &b reload &c管理员专用，&a重载配置");
+            sendMsg(player,"&c/sp &b normalStone &c管理员&a权限可用，给与&b普通强化石");
+            sendMsg(player,"&c/sp &b safeStone &c管理员&a权限可用，给与&c保护强化石");
+            sendMsg(player,"&c/sp &b successStone &c管理员&a权限可用，给与&e必定成功强化石");
         }
+        sendMsg(player,"&4&l===&6&l--------------------------------&4&l===");
     }
 
     /**

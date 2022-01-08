@@ -11,6 +11,7 @@ import top.mccat.domain.StrengthExtra;
 import top.mccat.domain.StrengthItemExtra;
 import top.mccat.domain.StrengthStone;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -40,21 +41,21 @@ public class ConfigFactory {
      */
     public void initFile(){
         try {
-            configuration.load(Objects.requireNonNull(ConfigFactory.class.getClassLoader().getResource("config.yml")).getFile());
+            configuration.load(new File(plugin.getDataFolder(),"config.yml"));
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
-            plugin.consoleMsg("&a[strengthPlus]&c配置文件不存在，正在生成配置文件....");
+            plugin.consoleMsg("&c&l配置文件不存在，正在生成配置文件....");
             plugin.saveDefaultConfig();
             initFile();
         }
-        plugin.consoleMsg("&a[strengthPlus]&b配置文件已加载...");
+        plugin.consoleMsg("&c&l本地配置文件初始化成功，正在读取配置文件...");
     }
 
     public void initExtra(){
         initItemExtra();
         initStrengthStone();
         initDamageExtra();
-        plugin.consoleMsg("&a[strengthPlus]&c配置文件读取成功...");
+        plugin.consoleMsg("&6&l配置文件读取成功！");
     }
 
     /**
@@ -62,8 +63,8 @@ public class ConfigFactory {
      */
     private void initItemExtra(){
         StrengthItemExtra extra = new StrengthItemExtra();
-        List<?> materials = configuration.getList("itemName");
-        extra.setMaterials((List<Material>) materials);
+        List<String> materials = configuration.getStringList("itemName");
+        extra.setMaterials(materials);
         extra.setStrengthChance(configuration.getIntegerList("strength_chance"));
         strengthExtra.setStrengthItemExtra(extra);
     }
@@ -84,15 +85,24 @@ public class ConfigFactory {
         configurationSections.add(stoneSuccess);
         for (ConfigurationSection section : configurationSections) {
             StrengthStone stone = new StrengthStone();
-            stone.setStoneName(Objects.requireNonNull(section).getString("name"));
+            stone.setStoneName(ColorUtils.getColorStr(Objects.requireNonNull(section).getString("name")));
             stone.setMaterial(section.getString("item"));
-            stone.setLore(section.getStringList("lore"));
+            List<String> lore = section.getStringList("lore");
+            stone.setLore(getParseLore(lore));
             stone.setSafe(section.getBoolean("safe", false));
             stone.setSuccess(section.getBoolean("success", false));
             strengthStones.add(stone);
         }
         //注入对象
         strengthExtra.setStrengthStones(strengthStones);
+    }
+
+    private List<String> getParseLore(List<String> lore){
+        List<String> parseLore = new ArrayList<>();
+        for(String str : lore){
+            parseLore.add(ColorUtils.getColorStr(str));
+        }
+        return parseLore;
     }
 
     /**

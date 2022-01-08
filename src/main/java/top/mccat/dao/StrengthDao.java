@@ -15,40 +15,55 @@ public interface StrengthDao {
      * 普通强化
      * @param isSuccess 是否成功
      * @param level 当前等级
+     * @param stack 玩家强化物品
      * @return 强化物品
      */
-    ItemStack normalStrength(boolean isSuccess,int level);
+    ItemStack normalStrength(boolean isSuccess,int level, ItemStack stack);
 
     /**
      * 安全强化
      * @param isSuccess 是否成功
      * @param level 当前等级
+     * @param stack 玩家强化物品
      * @return 强化物品
      */
-    ItemStack safeStrength(boolean isSuccess, int level);
+    ItemStack safeStrength(boolean isSuccess, int level,ItemStack stack);
 
     /**
      * 必定成功强化
      * @param level 当前等级
+     * @param stack 玩家强化物品
      * @return 强化物品
      */
-    ItemStack successStrength(int level);
+    ItemStack successStrength(int level,ItemStack stack);
 
     /**
      * 直接满级强化
+     * @param stack 玩家强化物品
      * @return 强化物品
      */
-    ItemStack adminStrength();
+    ItemStack adminStrength(ItemStack stack);
 
     /**
      * 获取普通强化石
-     * @return 获取强化石
+     * @param count 数量
+     * @return 强化石对象
      */
-    ItemStack giveNormalStone();
+    ItemStack giveNormalStone(int count);
 
-    ItemStack giveSafeStone();
+    /**
+     * 获取保护强化石
+     * @param count 数量
+     * @return 保护强化石对象
+     */
+    ItemStack giveSafeStone(int count);
 
-    ItemStack giveSuccessStone();
+    /**
+     * 获取必定成功强化石
+     * @param count 数量
+     * @return 必定成功强化石对象
+     */
+    ItemStack giveSuccessStone(int count);
 
     /**
      * 用于给玩家展示菜单面板的方法

@@ -23,6 +23,16 @@ public interface StrengthService {
     ItemStack strengthItem(Player player,boolean isSafe, boolean isSuccess, boolean isAdmin);
 
     /**
+     * 获取强化石方法
+     * @param player player.
+     * @param isSafe 是否为保护强化石
+     * @param isSuccess 是否为必定成功强化石
+     * @param amount 数量
+     * @return item 物品
+     */
+    ItemStack giveStrengthStone(Player player,int amount ,boolean isSafe, boolean isSuccess);
+
+    /**
      * 用于给玩家展示菜单面板的方法
      * @param player player.
      */

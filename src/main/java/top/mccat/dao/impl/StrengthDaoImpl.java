@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mccat.dao.StrengthDao;
+import top.mccat.domain.StrengthStone;
 import top.mccat.service.impl.StrengthServiceImpl;
 import top.mccat.utils.ColorUtils;
 import top.mccat.utils.MenuUtils;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 public class StrengthDaoImpl implements StrengthDao{
     private List<String> adminStrengthLore = new ArrayList<>();
+    private List<StrengthStone> strengthStones;
     public StrengthDaoImpl(){
         adminStrengthLore.add(StrengthServiceImpl.ADMIN_PREFIX);
         adminStrengthLore.add("&c----------");
@@ -29,43 +31,83 @@ public class StrengthDaoImpl implements StrengthDao{
     }
 
     @Override
-    public ItemStack normalStrength(boolean isSuccess, int level) {
+    public ItemStack normalStrength(boolean isSuccess, int level, ItemStack stack) {
+        ItemMeta meta = stack.getItemMeta();
+        int stackLevel = levelHandler(isSuccess, level);
+        assert meta != null;
+        setNormalLore(meta,stackLevel);
+        stack.setItemMeta(meta);
+        return stack;
+    }
+
+    @Override
+    public ItemStack safeStrength(boolean isSuccess, int level, ItemStack stack) {
         return null;
     }
 
     @Override
-    public ItemStack safeStrength(boolean isSuccess, int level) {
+    public ItemStack successStrength(int level, ItemStack stack) {
         return null;
     }
 
     @Override
-    public ItemStack successStrength(int level) {
+    public ItemStack adminStrength(ItemStack stack) {
         return null;
     }
 
     @Override
-    public ItemStack adminStrength() {
-        return null;
+    public ItemStack giveNormalStone(int count) {
+        return getStoneStack(0,count);
     }
 
     @Override
-    public ItemStack giveNormalStone() {
-        return null;
+    public ItemStack giveSafeStone(int count) {
+        return getStoneStack(1,count);
     }
 
     @Override
-    public ItemStack giveSafeStone() {
-        return null;
-    }
-
-    @Override
-    public ItemStack giveSuccessStone() {
-        return null;
+    public ItemStack giveSuccessStone(int count) {
+        return getStoneStack(2,count);
     }
 
     @Override
     public void infoMenu(Player player) {
         MenuUtils.menuInfo(player);
+    }
+
+    /**
+     * 通过对应列表下表和物品数量进行配置
+     * @param index stones列表下标
+     * @param count 给与物品堆数量
+     * @return 物品堆对象
+     */
+    private ItemStack getStoneStack(int index, int count){
+        StrengthStone stone = strengthStones.get(index);
+        Material type = Material.valueOf(stone.getMaterial());
+        ItemStack stack = new ItemStack(type);
+        ItemMeta itemMeta = stack.getItemMeta();
+        assert itemMeta != null;
+        itemMeta.setLore(stone.getLore());
+        itemMeta.setDisplayName(stone.getStoneName());
+        stack.setItemMeta(itemMeta);
+        stack.setAmount(count);
+        return stack;
+    }
+
+    /**
+     * 处理level，这里默认将超过10的等级再最开始强化的时候就进行处理，这里不做判断。
+     * @param success 是否成功
+     * @param level 当前物品等级
+     * @return extra 进行强化后的物品等级,最小等级必须为0
+     */
+    private int levelHandler(boolean success, int level){
+        int extra = 0;
+        if (success) {
+            extra = level + 1;
+        } else {
+            extra = level - 1;
+        }
+        return Math.max(extra, 0);
     }
 
     /**
@@ -79,6 +121,7 @@ public class StrengthDaoImpl implements StrengthDao{
             itemMetaLore = new ArrayList<>();
         }
         setLoreList(itemMetaLore,StrengthServiceImpl.STRENGTH_PREFIX,level);
+        itemMeta.setLore(itemMetaLore);
     }
 
     /**
@@ -89,7 +132,7 @@ public class StrengthDaoImpl implements StrengthDao{
      */
     private void setLoreList(List<String> itemMetaLore, String prefix,int level){
         itemMetaLore.add(prefix);
-        itemMetaLore.add("&b----------");
+        itemMetaLore.add("§b--------------------");
         itemMetaLore.add(getLevelStr(level));
     }
 
@@ -104,5 +147,9 @@ public class StrengthDaoImpl implements StrengthDao{
             builder.append("✡");
         }
         return builder.toString();
+    }
+
+    public void setStrengthStones(List<StrengthStone> strengthStones) {
+        this.strengthStones = strengthStones;
     }
 }
