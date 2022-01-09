@@ -13,14 +13,13 @@ import top.mccat.domain.StrengthExtra;
 import top.mccat.domain.StrengthStone;
 import top.mccat.service.impl.StrengthServiceImpl;
 import top.mccat.utils.ConfigFactory;
-import top.mccat.utils.DebugMsgUtils;
 import top.mccat.utils.PlayerMsgUtils;
 
 import java.util.List;
 
 /**
  * @ClassName: CommandHandler
- * @Description: TODO
+ * @Description: 处理命令的Handler
  * @Author: Raven
  * @Date: 2022/1/6
  * @Version: 1.0
@@ -28,17 +27,15 @@ import java.util.List;
 public class CommandHandler implements CommandExecutor {
     private StrengthPlus plugin;
     private ConfigFactory factory;
-    private StrengthServiceImpl strengthService;
+    private static StrengthServiceImpl strengthService;
     private static final int DEFAULT_STACK = 64;
     public static final String ADMIN_PERMISSION = "strength.admin";
-    public CommandHandler(){
-        strengthService = new StrengthServiceImpl();
-    }
 
     public CommandHandler(StrengthPlus plugin, ConfigFactory factory){
         this.plugin = plugin;
         this.factory = factory;
         strengthService = new StrengthServiceImpl(factory.getStrengthExtra());
+        strengthService.setPlugin(plugin);
     }
 
     @Override
@@ -217,7 +214,6 @@ public class CommandHandler implements CommandExecutor {
      */
     private void strengthCheck(ItemStack stack, Player player){
         if(stack!=null){
-            DebugMsgUtils.sendDebugMsg(player,"strength success...");
             player.getInventory().setItemInMainHand(stack);
         }
     }

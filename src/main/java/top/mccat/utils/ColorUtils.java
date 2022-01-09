@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 
 /**
  * @ClassName: ColorUtils
- * @Description: TODO
+ * @Description: 转义颜色工具
  * @Author: Raven
  * @Date: 2022/1/6
  * @Version: 1.0

@@ -17,7 +17,7 @@ import java.util.*;
 
 /**
  * @ClassName: ConfigFactory
- * @Description: TODO
+ * @Description: 配置文件工厂，用于生成config.yml和 加载配置文件
  * @Author: Raven
  * @Date: 2022/1/6
  * @Version: 1.0

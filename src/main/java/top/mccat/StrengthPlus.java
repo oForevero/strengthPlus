@@ -10,6 +10,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import top.mccat.handler.CommandHandler;
+import top.mccat.listener.OnDamageListener;
 import top.mccat.utils.ColorUtils;
 import top.mccat.utils.ConfigFactory;
 import top.mccat.utils.MenuUtils;
@@ -22,13 +23,14 @@ import java.util.stream.Collectors;
 
 /**
  * @ClassName: StrengthPlus
- * @Description: TODO
+ * @Description: 主启动类，负责加载各个模块
  * @Author: Raven
  * @Date: 2022/1/6
  * @Version: 1.0
  */
 public class StrengthPlus extends JavaPlugin {
     private static final String DEFAULT_COMMAND = "sp";
+    private OnDamageListener damageListener;
     private ConsoleCommandSender sender;
     private ConfigFactory factory;
     private CommandHandler handler;
@@ -47,6 +49,7 @@ public class StrengthPlus extends JavaPlugin {
         Objects.requireNonNull(Bukkit.getPluginCommand(DEFAULT_COMMAND)).setExecutor(handler);
         handler.setFactory(factory);
         Objects.requireNonNull(Bukkit.getPluginCommand(DEFAULT_COMMAND)).setTabCompleter(this);
+
     }
 
     @Override
@@ -74,7 +77,20 @@ public class StrengthPlus extends JavaPlugin {
         return Arrays.stream(subCommands).filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
     }
 
+    /**
+     * 发送控制台信息
+     * @param msg 消息字符串
+     */
     public void consoleMsg(String msg){
         sender.sendMessage(ColorUtils.getColorStr("&a[strengthPlus] "+msg));
     }
+
+    /**
+     * 进行强化广播消息
+     * @param msg 消息字符串
+     */
+    public void strengthBroadcastMsg(String msg){
+        this.getServer().broadcastMessage(ColorUtils.getColorStr("&b[&e&l强化公告&b] "+msg));
+    }
+
 }

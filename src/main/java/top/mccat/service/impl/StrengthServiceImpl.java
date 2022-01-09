@@ -5,15 +5,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import top.mccat.StrengthPlus;
 import top.mccat.dao.impl.StrengthDaoImpl;
 import top.mccat.domain.StrengthExtra;
 import top.mccat.domain.StrengthItemStack;
 import top.mccat.domain.StrengthStone;
 import top.mccat.service.StrengthService;
-import top.mccat.utils.DebugMsgUtils;
 import top.mccat.utils.PlayerMsgUtils;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -25,12 +23,10 @@ import java.util.Random;
  * @Version: 1.0
  */
 public class StrengthServiceImpl implements StrengthService {
+    private StrengthPlus plugin;
     private final StrengthDaoImpl dao = new StrengthDaoImpl();
     private StrengthExtra strengthExtra;
-    public static final String ADMIN_PREFIX = "§b[§c§l管理员§b强化等级]:§6§l";
     private final Random random = new Random();
-
-    public StrengthServiceImpl(){}
 
     public StrengthServiceImpl(StrengthExtra strengthExtra){
         this.strengthExtra = strengthExtra;
@@ -39,7 +35,7 @@ public class StrengthServiceImpl implements StrengthService {
 
     @Override
     public ItemStack strengthItem(Player p,boolean isSafe, boolean isSuccess, boolean isAdmin) {
-        ItemStack mainHandStack = null;
+        ItemStack mainHandStack;
         if(canBeStrength(mainHandStack = p.getInventory().getItemInMainHand())){
             StrengthItemStack strengthItemStack = getStrengthItem(mainHandStack);
             strengthItemStack.setAuthor(p);
@@ -50,7 +46,6 @@ public class StrengthServiceImpl implements StrengthService {
             }
             boolean strengthStatue = strengthResult(level);
             if(costStone(p,isSafe,isSuccess)) {
-                DebugMsgUtils.sendDebugMsg(p,"haven been costStone...");
                 if (isSafe) {
                     mainHandStack = dao.safeStrength(strengthStatue, strengthItemStack);
                 } else if (isSuccess) {
@@ -59,7 +54,6 @@ public class StrengthServiceImpl implements StrengthService {
                     mainHandStack = dao.adminStrength(strengthItemStack);
                 } else {
                     mainHandStack = dao.normalStrength(strengthStatue, strengthItemStack);
-                    DebugMsgUtils.sendDebugMsg(p,"normal strength...");
                 }
                 return mainHandStack;
             }else{
@@ -73,7 +67,7 @@ public class StrengthServiceImpl implements StrengthService {
 
     @Override
     public ItemStack giveStrengthStone(Player player, int amount, boolean isSafe, boolean isSuccess) {
-        ItemStack strengthStoneStack = null;
+        ItemStack strengthStoneStack;
         if(isSafe){
             strengthStoneStack = dao.giveSafeStone(amount);
         }else if (isSuccess){
@@ -168,12 +162,18 @@ public class StrengthServiceImpl implements StrengthService {
             //对应普通石的列表地址
             stone = strengthStones.get(0);
         }
-        String stoneMaterial = stone.getMaterial();
         for(ItemStack stack : extraContents){
             if(stack!=null){
-                if(stoneMaterial.equals(stack.getType().toString())){
-                    stack.setAmount(stack.getAmount()-1);
-                    return true;
+                if(stone.getMaterial().equals(stack.getType().toString())){
+                    ItemStack item = new ItemStack(Material.valueOf(stone.getMaterial()));
+                    ItemMeta itemMeta = item.getItemMeta();
+                    itemMeta.setLore(stone.getLore());
+                    itemMeta.setDisplayName(stone.getStoneName());
+                    item.setItemMeta(itemMeta);
+                    if(item.isSimilar(stack)){
+                        stack.setAmount(stack.getAmount()-1);
+                        return true;
+                    }
                 }
             }
         }
@@ -186,6 +186,11 @@ public class StrengthServiceImpl implements StrengthService {
      */
     public void reloadServiceConfig(StrengthExtra strengthExtra){
         dao.setStrengthStones(strengthExtra.getStrengthStones());
+    }
+
+    public void setPlugin(StrengthPlus plugin) {
+        this.plugin = plugin;
+        dao.setPlugin(plugin);
     }
 
     public void setStrengthExtra(StrengthExtra strengthExtra) {

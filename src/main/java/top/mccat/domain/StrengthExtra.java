@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * @ClassName: StrengthExtra
- * @Description: TODO
+ * @Description: 总强化bean类
  * @Author: Raven
  * @Date: 2022/1/6
  * @Version: 1.0

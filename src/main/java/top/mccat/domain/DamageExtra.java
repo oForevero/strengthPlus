@@ -2,7 +2,7 @@ package top.mccat.domain;
 
 /**
  * @ClassName: DamageExtra
- * @Description: TODO
+ * @Description: 伤害bean类
  * @Author: Raven
  * @Date: 2022/1/6
  * @Version: 1.0

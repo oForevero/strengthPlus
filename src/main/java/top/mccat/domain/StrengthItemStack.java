@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * @ClassName: StrengthItemStack
- * @Description: TODO
+ * @Description: 强化物品Stack
  * @Author: Raven
  * @Date: 2022/1/9
  * @Version: 1.0
@@ -18,7 +18,7 @@ public class StrengthItemStack {
     private int strengthLoreIndex = -1;
     private int strengthLevel = 0;
     private Player author;
-    public static final String STRENGTH_PREFIX = "§b[强化等级]:§6§l";
+    public static final String STRENGTH_PREFIX = "§6[§b强化等级§6]";
     public static final String SPLIT_LINE = "§c--------------";
 
     public ItemStack getItemStack() {

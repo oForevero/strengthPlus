@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 /**
  * @ClassName: PlayerMsgUtils
- * @Description: TODO
+ * @Description: 玩家信息类，所有的玩家信息都使用了该 util
  * @Author: Raven
  * @Date: 2022/1/8
  * @Version: 1.0
