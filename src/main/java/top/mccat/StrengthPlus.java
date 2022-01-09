@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import top.mccat.handler.CommandHandler;
 import top.mccat.listener.OnDamageListener;
+import top.mccat.service.impl.StrengthServiceImpl;
 import top.mccat.utils.ColorUtils;
 import top.mccat.utils.ConfigFactory;
 import top.mccat.utils.MenuUtils;
@@ -71,6 +72,7 @@ public class StrengthPlus extends JavaPlugin {
     /**
      * 子命令联想
      */
+    private final String[] subUserCommands = {"normal", "safe", "success"};
     private final String[] subCommands = {"normal", "safe", "success", "admin", "reload", "normalstone", "safestone", "successstone"};
     @Override
     public @Nullable
@@ -78,10 +80,16 @@ public class StrengthPlus extends JavaPlugin {
         if (args.length > 1) {
             return new ArrayList<>();
         }
-        if (args.length == 0) {
-            return Arrays.asList(subCommands);
+        if(sender.hasPermission(CommandHandler.ADMIN_PERMISSION)){
+            if (args.length == 0) {
+                return Arrays.asList(subCommands);
+            }
+            return Arrays.stream(subCommands).filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
         }
-        return Arrays.stream(subCommands).filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
+        if (args.length == 0) {
+            return Arrays.asList(subUserCommands);
+        }
+        return Arrays.stream(subUserCommands).filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
     }
 
     /**
