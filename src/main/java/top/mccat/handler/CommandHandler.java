@@ -40,7 +40,7 @@ public class CommandHandler implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String mainCommand, String[] commandArray) {
-        if(commandSender instanceof Player){
+        if(!"CONSOLE".equals(commandSender.getName())){
             Player player = ((Player) commandSender).getPlayer();
             assert player != null;
             if (commandArray.length<1){
@@ -96,14 +96,15 @@ public class CommandHandler implements CommandExecutor {
             }
             return true;
         }else {
-            if ("reload".equals(commandArray[0])) {
-                plugin.reloadConfig();
-                return true;
-            }else {
-                plugin.consoleMsg("控制台仅允许使用reload指令");
+            if (commandArray.length>0){
+                if ("reload".equals(commandArray[0])) {
+                    plugin.reloadConfig();
+                    return true;
+                }
             }
+            plugin.consoleMsg("&c控制台仅允许使用reload指令");
         }
-        return false;
+        return true;
     }
 
     /**
