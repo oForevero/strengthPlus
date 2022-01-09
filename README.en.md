@@ -1,6 +1,6 @@
-#StregnthPlus
+## StregnthPlus
 
-## introduce
+### introduce
 A simple and lightweight java enhancement plug-in, which strengthens items by adding or removing lore to items, and makes damage judgments when players attack.
 If there is an enhancement level, the corresponding damage will be added, otherwise, the corresponding damage reduction will be performed. to achieve the effect of strengthening the item. If the item is over level 8, then if
 Strengthening is not strengthening for protection, then the item will shatter and disappear when the strengthening fails (this is irreversible, please pay attention!). Allowed for each level of reinforcement
