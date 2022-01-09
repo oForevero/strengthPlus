@@ -50,13 +50,15 @@ public class StrengthServiceImpl implements StrengthService {
                     mainHandStack = dao.safeStrength(strengthStatue, strengthItemStack);
                 } else if (isSuccess) {
                     mainHandStack = dao.successStrength(strengthItemStack);
-                } else if (isAdmin) {
-                    mainHandStack = dao.adminStrength(strengthItemStack);
-                } else {
+                }else {
                     mainHandStack = dao.normalStrength(strengthStatue, strengthItemStack);
                 }
                 return mainHandStack;
-            }else{
+            }else if(isAdmin){
+                mainHandStack = dao.adminStrength(strengthItemStack);
+                plugin.strengthBroadcastMsg("&c&l卑鄙的管理员&a[&e&l"+p.getName()+"&a]&c&l使用管理员指令将自己的武器直接强化到了满级，真是厚颜无耻之人！");
+                return mainHandStack;
+            }else {
                 PlayerMsgUtils.sendMsg(p,"&c&l请确定自己有足够的强化石进行此强化！");
             }
         }else {

@@ -45,11 +45,17 @@ public class StrengthPlus extends JavaPlugin {
     @Override
     public void onEnable() {
         factory = new ConfigFactory(this);
+        //初始化并绑定handler
         handler = new CommandHandler(this,factory);
         Objects.requireNonNull(Bukkit.getPluginCommand(DEFAULT_COMMAND)).setExecutor(handler);
         handler.setFactory(factory);
+        //设置tab联想
         Objects.requireNonNull(Bukkit.getPluginCommand(DEFAULT_COMMAND)).setTabCompleter(this);
-
+        //初始化并绑定监听器
+        damageListener = new OnDamageListener();
+        damageListener.setPlugin(this);
+        damageListener.setDamageExtra(factory.getStrengthExtra().getDamageExtra());
+        getServer().getPluginManager().registerEvents(damageListener,this);
     }
 
     @Override
@@ -59,6 +65,7 @@ public class StrengthPlus extends JavaPlugin {
         factory.initFile();
         factory.initExtra();
         handler.reloadHandlerMethod(factory.getStrengthExtra());
+        damageListener.setDamageExtra(factory.getStrengthExtra().getDamageExtra());
     }
 
     /**

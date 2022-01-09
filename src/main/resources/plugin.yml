@@ -7,5 +7,4 @@ commands:
         description: "strengthPlus command"
         usage: /sp
         aliases: [ stregnthplus,qh ]
-        permission: "strengths.use"
         permission-message: "§a[StrengthPlus]§c你无权使用该指令"

@@ -25,7 +25,7 @@ import java.util.*;
 public class ConfigFactory {
     private StrengthPlus plugin;
     private StrengthExtra strengthExtra;
-    private FileConfiguration configuration = new YamlConfiguration();
+    private final FileConfiguration configuration = new YamlConfiguration();
 
     public ConfigFactory(){}
 

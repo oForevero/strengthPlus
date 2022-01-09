@@ -164,31 +164,6 @@ public class CommandHandler implements CommandExecutor {
         return -1;
     }
 
-    /**
-     * 用于检查是否存在不满一个堆叠物品的数字
-     * @param stack stack对象
-     * @param inventory playerInventory对象
-     * @return 是否存在
-     */
-    private boolean isSameStone(ItemStack stack, PlayerInventory inventory){
-        List<StrengthStone> strengthStones = factory.getStrengthExtra().getStrengthStones();
-        StrengthStone stone = null;
-        for (StrengthStone strengthStone : strengthStones){
-            if(strengthStone.getMaterial().equals(stack.getType().toString())){
-                stone = strengthStone;
-                break;
-            }
-        }
-        if (inventory.first(stack.getType())!=-1){
-            ItemMeta itemMeta = stack.getItemMeta();
-            if(stone.getStoneName().equals(itemMeta.getDisplayName())){
-                if(itemMeta.getLore().equals(stone.getLore())){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     /**
      * 判断是否给与物品，且物品数 > 0
@@ -197,13 +172,15 @@ public class CommandHandler implements CommandExecutor {
      * @return 数值，如果为零则证明错误
      */
     private int giveCommandCheck(String[] commandArray, Player player){
-        if(commandArray.length>1){
-            if(commandArray[1]!=null && player.hasPermission(ADMIN_PERMISSION)){
-                int amount = Integer.parseInt(commandArray[1]);
-                return Math.max(amount, 0);
+        if(player.hasPermission(ADMIN_PERMISSION)) {
+            if (commandArray.length > 1) {
+                if (commandArray[1] != null && player.hasPermission(ADMIN_PERMISSION)) {
+                    int amount = Integer.parseInt(commandArray[1]);
+                    return Math.max(amount, 0);
+                }
             }
+            PlayerMsgUtils.sendMsg(player,"&b&l请输入给与强化石物品数量");
         }
-        PlayerMsgUtils.sendMsg(player,"&b&l请输入给与强化石物品数量");
         return 0;
     }
 
