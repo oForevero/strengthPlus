@@ -30,7 +30,7 @@ public class CommandHandler implements CommandExecutor {
     private ConfigFactory factory;
     private StrengthServiceImpl strengthService;
     private static final int DEFAULT_STACK = 64;
-    private static final String ADMIN_PERMISSION = "strength.admin";
+    public static final String ADMIN_PERMISSION = "strength.admin";
     public CommandHandler(){
         strengthService = new StrengthServiceImpl();
     }
@@ -85,6 +85,7 @@ public class CommandHandler implements CommandExecutor {
                         if((amount = giveCommandCheck(commandArray,player))>0) {
                             giveStrengthStone(player,strengthService.giveStrengthStone(player, amount, false, true));
                         }
+                        break;
                     case "reload":
                         if(player.hasPermission(ADMIN_PERMISSION)){
                             PlayerMsgUtils.sendMsg(player,"&c&l正在重新读取&a[&bconfig.yml&a]&c&l文件，请稍后...");
@@ -217,7 +218,6 @@ public class CommandHandler implements CommandExecutor {
     private void strengthCheck(ItemStack stack, Player player){
         if(stack!=null){
             DebugMsgUtils.sendDebugMsg(player,"strength success...");
-            DebugMsgUtils.sendDebugMsg(player,stack.getItemMeta().toString());
             player.getInventory().setItemInMainHand(stack);
         }
     }

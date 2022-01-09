@@ -7,6 +7,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mccat.dao.impl.StrengthDaoImpl;
 import top.mccat.domain.StrengthExtra;
+import top.mccat.domain.StrengthItemStack;
 import top.mccat.domain.StrengthStone;
 import top.mccat.service.StrengthService;
 import top.mccat.utils.DebugMsgUtils;
@@ -26,7 +27,6 @@ import java.util.Random;
 public class StrengthServiceImpl implements StrengthService {
     private final StrengthDaoImpl dao = new StrengthDaoImpl();
     private StrengthExtra strengthExtra;
-    public static final String STRENGTH_PREFIX = "§b[强化等级]:§6§l";
     public static final String ADMIN_PREFIX = "§b[§c§l管理员§b强化等级]:§6§l";
     private final Random random = new Random();
 
@@ -41,21 +41,24 @@ public class StrengthServiceImpl implements StrengthService {
     public ItemStack strengthItem(Player p,boolean isSafe, boolean isSuccess, boolean isAdmin) {
         ItemStack mainHandStack = null;
         if(canBeStrength(mainHandStack = p.getInventory().getItemInMainHand())){
+            StrengthItemStack strengthItemStack = getStrengthItem(mainHandStack);
+            strengthItemStack.setAuthor(p);
             int level;
-            if((level = getStackLevel(mainHandStack))>9){
+            if((level = strengthItemStack.getStrengthLevel())>9){
                 PlayerMsgUtils.sendMsg(p,"&c&l你的武器已强化到最高等级！无法再进行武器的强化！");
+                return null;
             }
             boolean strengthStatue = strengthResult(level);
             if(costStone(p,isSafe,isSuccess)) {
                 DebugMsgUtils.sendDebugMsg(p,"haven been costStone...");
                 if (isSafe) {
-                    mainHandStack = dao.safeStrength(strengthStatue, level, mainHandStack);
+                    mainHandStack = dao.safeStrength(strengthStatue, strengthItemStack);
                 } else if (isSuccess) {
-                    mainHandStack = dao.successStrength(level, mainHandStack);
+                    mainHandStack = dao.successStrength(strengthItemStack);
                 } else if (isAdmin) {
-                    mainHandStack = dao.adminStrength(mainHandStack);
+                    mainHandStack = dao.adminStrength(strengthItemStack);
                 } else {
-                    mainHandStack = dao.normalStrength(strengthStatue, level, mainHandStack);
+                    mainHandStack = dao.normalStrength(strengthStatue, strengthItemStack);
                     DebugMsgUtils.sendDebugMsg(p,"normal strength...");
                 }
                 return mainHandStack;
@@ -78,6 +81,7 @@ public class StrengthServiceImpl implements StrengthService {
         }else {
             strengthStoneStack = dao.giveNormalStone(amount);
         }
+        PlayerMsgUtils.sendMsg(player,"&b&l已向您发送&a[&c"+amount+"&a]&b&l个&a["+strengthStoneStack.getItemMeta().getDisplayName()+"&a]");
         return strengthStoneStack;
     }
 
@@ -104,24 +108,28 @@ public class StrengthServiceImpl implements StrengthService {
     }
 
     /**
-     * 获取物品等级
-     * @param stack itemStack对象
-     * @return 等级数值 为 0 代表无强化等级，>0则代表有强化等级）
+     * 获取物品堆等级
+     * @param stack itemStack 对象
+     * @return strengthItemStack 对象
      */
-    private int getStackLevel(ItemStack stack){
+    private StrengthItemStack getStrengthItem(ItemStack stack){
+        StrengthItemStack strengthItemStack = new StrengthItemStack();
+        strengthItemStack.setItemStack(stack);
         ItemMeta itemMeta = stack.getItemMeta();
         if (itemMeta != null) {
             List<String> lore = itemMeta.getLore();
             if (lore!=null){
-                for(String str : lore){
-                    if (str.contains(STRENGTH_PREFIX)){
+                for(int i = 0;i < lore.size(); i++){
+                    String str = lore.get(i);
+                    if (str.contains(StrengthItemStack.STRENGTH_PREFIX)){
+                        strengthItemStack.setStrengthLoreIndex(i);
                         //由于有§c的前置所以要-2
-                        return str.split(STRENGTH_PREFIX)[1].length()-2;
+                        strengthItemStack.setStrengthLevel(lore.get(i+2).length()-2);
                     }
                 }
             }
         }
-        return 0;
+        return strengthItemStack;
     }
 
     /**

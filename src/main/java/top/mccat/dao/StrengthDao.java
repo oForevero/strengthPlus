@@ -2,6 +2,7 @@ package top.mccat.dao;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import top.mccat.domain.StrengthItemStack;
 
 /**
  * @ClassName: strengthDao
@@ -14,35 +15,32 @@ public interface StrengthDao {
     /**
      * 普通强化
      * @param isSuccess 是否成功
-     * @param level 当前等级
-     * @param stack 玩家强化物品
+     * @param strengthItemStack 玩家强化物品对象
      * @return 强化物品
      */
-    ItemStack normalStrength(boolean isSuccess,int level, ItemStack stack);
+    ItemStack normalStrength(boolean isSuccess, StrengthItemStack strengthItemStack);
 
     /**
      * 安全强化
      * @param isSuccess 是否成功
-     * @param level 当前等级
-     * @param stack 玩家强化物品
+     * @param strengthItemStack 玩家强化物品对象
      * @return 强化物品
      */
-    ItemStack safeStrength(boolean isSuccess, int level,ItemStack stack);
+    ItemStack safeStrength(boolean isSuccess, StrengthItemStack strengthItemStack);
 
     /**
      * 必定成功强化
-     * @param level 当前等级
-     * @param stack 玩家强化物品
+     * @param strengthItemStack 玩家强化物品对象
      * @return 强化物品
      */
-    ItemStack successStrength(int level,ItemStack stack);
+    ItemStack successStrength(StrengthItemStack strengthItemStack);
 
     /**
      * 直接满级强化
-     * @param stack 玩家强化物品
+     * @param strengthItemStack 玩家强化物品对象
      * @return 强化物品
      */
-    ItemStack adminStrength(ItemStack stack);
+    ItemStack adminStrength(StrengthItemStack strengthItemStack);
 
     /**
      * 获取普通强化石

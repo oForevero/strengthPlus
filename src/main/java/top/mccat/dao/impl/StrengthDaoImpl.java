@@ -5,10 +5,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mccat.dao.StrengthDao;
+import top.mccat.domain.StrengthItemStack;
 import top.mccat.domain.StrengthStone;
 import top.mccat.service.impl.StrengthServiceImpl;
-import top.mccat.utils.ColorUtils;
 import top.mccat.utils.MenuUtils;
+import top.mccat.utils.PlayerMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,27 +32,26 @@ public class StrengthDaoImpl implements StrengthDao{
     }
 
     @Override
-    public ItemStack normalStrength(boolean isSuccess, int level, ItemStack stack) {
-        ItemMeta meta = stack.getItemMeta();
-        int stackLevel = levelHandler(isSuccess, level);
-        assert meta != null;
-        setNormalLore(meta,stackLevel);
+    public ItemStack normalStrength(boolean isSuccess, StrengthItemStack strengthItemStack) {
+        ItemStack stack = strengthItemStack.getItemStack();
+        int stackLevel = levelHandler(strengthItemStack.getAuthor(),isSuccess, strengthItemStack.getStrengthLevel());
+        ItemMeta meta = setNormalLore(strengthItemStack, stackLevel);
         stack.setItemMeta(meta);
         return stack;
     }
 
     @Override
-    public ItemStack safeStrength(boolean isSuccess, int level, ItemStack stack) {
+    public ItemStack safeStrength(boolean isSuccess, StrengthItemStack strengthItemStack) {
         return null;
     }
 
     @Override
-    public ItemStack successStrength(int level, ItemStack stack) {
+    public ItemStack successStrength(StrengthItemStack strengthItemStack) {
         return null;
     }
 
     @Override
-    public ItemStack adminStrength(ItemStack stack) {
+    public ItemStack adminStrength(StrengthItemStack strengthItemStack) {
         return null;
     }
 
@@ -96,43 +96,58 @@ public class StrengthDaoImpl implements StrengthDao{
 
     /**
      * 处理level，这里默认将超过10的等级再最开始强化的时候就进行处理，这里不做判断。
+     * @param player 玩家对象
      * @param success 是否成功
      * @param level 当前物品等级
      * @return extra 进行强化后的物品等级,最小等级必须为0
      */
-    private int levelHandler(boolean success, int level){
+    private int levelHandler(Player player,boolean success, int level){
         int extra = 0;
         if (success) {
             extra = level + 1;
+            PlayerMsgUtils.sendMsg(player,"&6恭喜你，强化成功！ &b当前武器等级为 [&a"+(level+1)+"&b]");
         } else {
             extra = level - 1;
+            PlayerMsgUtils.sendMsg(player,"&c很遗憾，你的强化失败了！");
         }
         return Math.max(extra, 0);
     }
 
     /**
      * 设置普通lore
-     * @param itemMeta itemMeta 对象
+     * @param strengthItemStack StrengthItemStack 对象
      * @param level 等级
+     * @return itemMeta
      */
-    private void setNormalLore(ItemMeta itemMeta,int level){
+    private ItemMeta setNormalLore(StrengthItemStack strengthItemStack,int level){
+        ItemMeta itemMeta = strengthItemStack.getItemStack().getItemMeta();
         List<String> itemMetaLore = itemMeta.getLore();
         if(itemMetaLore==null){
             itemMetaLore = new ArrayList<>();
+        }else {
+            //由于默认不存在为-1
+            int strengthIndex;
+            if((strengthIndex = strengthItemStack.getStrengthLoreIndex())!=-1){
+                itemMetaLore.set(strengthIndex,StrengthItemStack.STRENGTH_PREFIX);
+                itemMetaLore.set(strengthIndex+1,StrengthItemStack.SPLIT_LINE);
+                itemMetaLore.set(strengthIndex+2,getLevelStr(level));
+                itemMeta.setLore(itemMetaLore);
+                return itemMeta;
+            }
         }
-        setLoreList(itemMetaLore,StrengthServiceImpl.STRENGTH_PREFIX,level);
+        setLoreList(itemMetaLore, level);
         itemMeta.setLore(itemMetaLore);
+        return itemMeta;
     }
 
     /**
      * 配置 lore 列表
      * @param itemMetaLore lore列表
-     * @param prefix 前缀
      * @param level 等级
      */
-    private void setLoreList(List<String> itemMetaLore, String prefix,int level){
-        itemMetaLore.add(prefix);
-        itemMetaLore.add("§b--------------------");
+    private void setLoreList(List<String> itemMetaLore, int level){
+        itemMetaLore.add(StrengthItemStack.STRENGTH_PREFIX);
+        itemMetaLore.add(StrengthItemStack.SPLIT_LINE);
         itemMetaLore.add(getLevelStr(level));
     }
 
@@ -142,7 +157,16 @@ public class StrengthDaoImpl implements StrengthDao{
      * @return 等级str
      */
     private String getLevelStr(int level){
-        StringBuilder builder = new StringBuilder("§b");
+        StringBuilder builder = new StringBuilder();
+        if (level < 6){
+            builder.append("§a");
+        }else if (level < 9){
+            builder.append("§b");
+        }else if(level == 9){
+            builder.append("§c");
+        }else {
+            builder.append("§e");
+        }
         for(int i = 0; i < level; i++){
             builder.append("✡");
         }

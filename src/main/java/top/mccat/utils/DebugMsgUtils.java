@@ -1,6 +1,7 @@
 package top.mccat.utils;
 
 import org.bukkit.entity.Player;
+import top.mccat.handler.CommandHandler;
 
 /**
  * @ClassName: DebugMsgUtils
@@ -11,6 +12,8 @@ import org.bukkit.entity.Player;
  */
 public class DebugMsgUtils {
     public static void sendDebugMsg(Player player,String msg){
-        player.sendMessage(ColorUtils.getColorStr("&c[strengthPlusDebugger]： &b&l"+msg));
+        if(player.isOp() || player.hasPermission(CommandHandler.ADMIN_PERMISSION)){
+            player.sendMessage(ColorUtils.getColorStr("&c[strengthPlusDebugger]： &b&l"+msg));
+        }
     }
 }
