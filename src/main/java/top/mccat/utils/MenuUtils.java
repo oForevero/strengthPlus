@@ -2,6 +2,7 @@ package top.mccat.utils;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import top.mccat.StrengthPlus;
 
 /**
  * @ClassName: MenuUtils
@@ -37,12 +38,12 @@ public class MenuUtils {
      * 作者信息menu
      * @param plugin javaPlugin.
      */
-    public static void authorMenu(JavaPlugin plugin){
-        plugin.getServer().getConsoleSender().sendMessage("§4§l===-------§6§l[StrengthPlus]§4§l--------===");
-        plugin.getServer().getConsoleSender().sendMessage("§b      制作者： Raven       ");
-        plugin.getServer().getConsoleSender().sendMessage("§b      QQ ： 740585947     ");
-        plugin.getServer().getConsoleSender().sendMessage("§b如有bug可以加我反馈也可以在bbs论坛下留言，蟹蟹！");
-        plugin.getServer().getConsoleSender().sendMessage("§4§l===-------§6§l[StrengthPlus]§4§l--------===");
+    public static void authorMenu(StrengthPlus plugin){
+        plugin.consoleMsg("&4&l===----------&6&l[StrengthPlus]&4&l-----------===");
+        plugin.consoleMsg("&b      制作者： Raven       ");
+        plugin.consoleMsg("&b      QQ ： 740585947     ");
+        plugin.consoleMsg("&b如有bug可以加我反馈也可以在bbs论坛下留言，蟹蟹！");
+        plugin.consoleMsg("&4&l===----------&6&l[StrengthPlus]&4&l-----------===");
     }
 
     public static void sendMsg(Player player, String str){

@@ -19,7 +19,7 @@ public class StrengthItemStack {
     private int strengthLevel = 0;
     private Player author;
     public static final String STRENGTH_PREFIX = "§6[§b强化等级§6]";
-    public static final String SPLIT_LINE = "§c--------------";
+    public static final String SPLIT_LINE = "§c---------------------";
 
     public ItemStack getItemStack() {
         return itemStack;
