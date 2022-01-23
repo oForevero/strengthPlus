@@ -40,11 +40,11 @@ public class StrengthPlus extends JavaPlugin {
     public void onLoad() {
         this.saveDefaultConfig();
         sender = getServer().getConsoleSender();
-        MenuUtils.authorMenu(this);
     }
 
     @Override
     public void onEnable() {
+        MenuUtils.authorMenu(this);
         factory = new ConfigFactory(this);
         //初始化并绑定handler
         handler = new CommandHandler(this,factory);

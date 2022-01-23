@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import top.mccat.StrengthPlus;
 import top.mccat.domain.DamageExtra;
 import top.mccat.domain.StrengthItemStack;
-import top.mccat.utils.DebugMsgUtils;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -41,7 +41,7 @@ public class OnDamageListener implements Listener {
                 if((defencerEntity = event.getEntity()) instanceof Player){
                     defencer = (Player) defencerEntity;
                 }
-                setDamage(event,0,damager,defencer,mainHandStack);
+                setDamage(event,0, defencer,mainHandStack);
             }
         }else if(event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE){
             if(damager != null){
@@ -52,9 +52,9 @@ public class OnDamageListener implements Listener {
                 }
                 Material type = mainHandStack.getType();
                 if(type.equals(Material.BOW)){
-                    setDamage(event,1,damager,defencer,mainHandStack);
+                    setDamage(event,1, defencer,mainHandStack);
                 }else if(type.equals(Material.CROSSBOW)){
-                    setDamage(event,2,damager,defencer,mainHandStack);
+                    setDamage(event,2, defencer,mainHandStack);
                 }
             }
         }
@@ -73,7 +73,7 @@ public class OnDamageListener implements Listener {
      * @param event 事件
      * @param item 如果是0，则为剑，1为弓，2为弩
      */
-    private void setDamage(EntityDamageByEntityEvent event, int item, Player damager, Player defencer,ItemStack mainHandStack){
+    private void setDamage(EntityDamageByEntityEvent event, int item, Player defencer, ItemStack mainHandStack){
         int damageLevel;
         double damage = event.getDamage();
         double defenceDamage = 0;
@@ -108,6 +108,7 @@ public class OnDamageListener implements Listener {
                     //防止刮痧伤害
                     event.setDamage(damageExtra.getMinDamage());
                 }
+                return;
             }
         }
         event.setDamage(damage);
@@ -119,15 +120,17 @@ public class OnDamageListener implements Listener {
      * @return 等级参数
      */
     private int getStackLevel(ItemStack stack){
-        ItemMeta itemMeta = stack.getItemMeta();
-        if (itemMeta != null) {
-            List<String> lore = itemMeta.getLore();
-            if (lore!=null){
-                for(int i = 0;i < lore.size(); i++){
-                    String str = lore.get(i);
-                    if (str.contains(StrengthItemStack.STRENGTH_PREFIX)){
-                        //由于有§c的前置所以要-2
-                        return lore.get(i+2).length()-2;
+        if(stack!=null){
+            ItemMeta itemMeta = stack.getItemMeta();
+            if (itemMeta != null) {
+                List<String> lore = itemMeta.getLore();
+                if (lore!=null){
+                    for(int i = 0;i < lore.size(); i++){
+                        String str = lore.get(i);
+                        if (str.contains(StrengthItemStack.STRENGTH_PREFIX)){
+                            //由于有§c的前置所以要-2
+                            return lore.get(i+2).length()-2;
+                        }
                     }
                 }
             }
